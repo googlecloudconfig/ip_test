@@ -1,41 +1,13 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head><meta charset="UTF-8"><title>Détecter IP avec WebRTC</title></head>
+<head><meta charset="UTF-8"><title>redirect gcp</title></head>
 <body>
-  <h1>IPs détectées par WebRTC</h1>
-  <pre id="ips">Recherche en cours...</pre>
-
   <script>
-    function getIPs(callback) {
-      const ips = new Set();
-      const pc = new RTCPeerConnection({iceServers: []});
-      pc.createDataChannel(""); // Nécessaire pour déclencher la découverte ICE
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone; // ex: "Europe/Paris"
+    // On peut rediriger vers /Europe_Paris par exemple en remplaçant le slash
+    const safeTimeZone = timeZone.replace(/\//g, '_'); 
 
-      pc.onicecandidate = event => {
-        if (!event.candidate) {
-          pc.close();
-          callback(Array.from(ips));
-          return;
-        }
-        const ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3})/;
-        const ipMatch = ipRegex.exec(event.candidate.candidate);
-        if (ipMatch) {
-          ips.add(ipMatch[1]);
-        }
-      };
-
-      pc.createOffer()
-        .then(offer => pc.setLocalDescription(offer))
-        .catch(err => console.error(err));
-    }
-
-    getIPs(ips => {
-      if (ips.length === 0) {
-        document.getElementById('ips').textContent = "Aucune IP détectée (WebRTC bloqué ou non supporté)";
-      } else {
-        document.getElementById('ips').textContent = ips.join('\n');
-      }
-    });
+    window.location.href = '/' + safeTimeZone;
   </script>
 </body>
 </html>
