@@ -1,28 +1,41 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <title>Récupérer IP avec ipinfo.io</title>
-</head>
+<head><meta charset="UTF-8"><title>Détecter IP avec WebRTC</title></head>
 <body>
-  <button onclick="getIP()">Obtenir mon IP</button>
-  <p id="ip-result"></p>
+  <h1>IPs détectées par WebRTC</h1>
+  <pre id="ips">Recherche en cours...</pre>
 
   <script>
-    function getIP() {
-      fetch('https://ipinfo.io/json?token=e04bfe1050f184')
-        .then(response => {
-          if (!response.ok) throw new Error('Erreur réseau');
-          return response.json();
-        })
-        .then(data => {
-          document.getElementById('ip-result').textContent = 'Votre IP est : ' + data.ip;
-        })
-        .catch(error => {
-          console.error('Erreur lors de la récupération de l\'IP :', error);
-          document.getElementById('ip-result').textContent = 'Erreur lors de la récupération de l\'IP.';
-        });
+    function getIPs(callback) {
+      const ips = new Set();
+      const pc = new RTCPeerConnection({iceServers: []});
+      pc.createDataChannel(""); // Nécessaire pour déclencher la découverte ICE
+
+      pc.onicecandidate = event => {
+        if (!event.candidate) {
+          pc.close();
+          callback(Array.from(ips));
+          return;
+        }
+        const ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3})/;
+        const ipMatch = ipRegex.exec(event.candidate.candidate);
+        if (ipMatch) {
+          ips.add(ipMatch[1]);
+        }
+      };
+
+      pc.createOffer()
+        .then(offer => pc.setLocalDescription(offer))
+        .catch(err => console.error(err));
     }
+
+    getIPs(ips => {
+      if (ips.length === 0) {
+        document.getElementById('ips').textContent = "Aucune IP détectée (WebRTC bloqué ou non supporté)";
+      } else {
+        document.getElementById('ips').textContent = ips.join('\n');
+      }
+    });
   </script>
 </body>
 </html>
