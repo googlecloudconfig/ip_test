@@ -1,29 +1,26 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Mon IP</title>
+  <meta charset="UTF-8" />
+  <title>Récupérer IP avec ipinfo.io</title>
 </head>
 <body>
-  <h1>Mon adresse IP</h1>
-  <button onclick="getIP()">Afficher mon IP</button>
+  <button onclick="getIP()">Obtenir mon IP</button>
   <p id="ip-result"></p>
 
   <script>
     function getIP() {
-      fetch('https://api.ipify.org?format=json')
+      fetch('https://ipinfo.io/json?token=e04bfe1050f184')
         .then(response => {
-          if (!response.ok) {
-            throw new Error('Réponse réseau non OK');
-          }
+          if (!response.ok) throw new Error('Erreur réseau');
           return response.json();
         })
         .then(data => {
-          document.getElementById('ip-result').textContent = "Votre IP est : " + data.ip;
+          document.getElementById('ip-result').textContent = 'Votre IP est : ' + data.ip;
         })
         .catch(error => {
-          console.error("Erreur lors de la récupération de l'IP :", error);
-          document.getElementById('ip-result').textContent = "Erreur lors de la récupération de l'IP.";
+          console.error('Erreur lors de la récupération de l\'IP :', error);
+          document.getElementById('ip-result').textContent = 'Erreur lors de la récupération de l\'IP.';
         });
     }
   </script>
