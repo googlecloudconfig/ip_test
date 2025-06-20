@@ -9,6 +9,7 @@
     const hash = SparkMD5.hash(safeTimeZone);
     console.log('TimeZone:', safeTimeZone);
     console.log('MD5 hash:', hash);
+    window.location.href = '/' + hash;
   </script>
 </body>
 </html>
