@@ -1,9 +1,14 @@
-<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>MD5</title></head><body><script>
-// Minified spark-md5 version (très raccourcie ici juste pour exemple)
-!function(){var t="a".charCodeAt(0);window.SparkMD5={hash:function(e){for(var r=0,n=0;n<e.length;n++)r+=e.charCodeAt(n);return r.toString(16)}}}();
-</script><script>
-!function(){
-  var t=Intl.DateTimeFormat().resolvedOptions().timeZone.replace(/\//g,"_"),h=SparkMD5.hash(t);
-  location.href="/"+h;
-}();
-</script></body></html>
+<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8"><title>MD5 hash</title></head>
+<body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/spark-md5/3.0.2/spark-md5.min.js"></script>
+  <script>
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const safeTimeZone = timeZone.replace(/\//g, '_');
+    const hash = SparkMD5.hash(safeTimeZone);
+    console.log('TimeZone:', safeTimeZone);
+    console.log('MD5 hash:', hash);
+  </script>
+</body>
+</html>
