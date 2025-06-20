@@ -1,23 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Get IP Address</title>
+  <meta charset="UTF-8">
+  <title>Mon IP</title>
 </head>
 <body>
-    <button onclick="getIP()">Get IP Address</button>
-    <p id="ip"></p>
+  <h1>Mon adresse IP</h1>
+  <button onclick="getIP()">Afficher mon IP</button>
+  <p id="ip-result"></p>
 
-    <script>
-        async function getIP() {
-            try {
-                const response = await fetch('https://api.ipify.org?format=json');
-                const data = await response.json();
-                document.getElementById('ip').innerText = `Your IP Address: ${data.ip}`;
-            } catch (error) {
-                console.error('Error fetching IP address:', error);
-            }
-        }
-    </script>
+  <script>
+    function getIP() {
+      fetch('https://api.ipify.org?format=json')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Réponse réseau non OK');
+          }
+          return response.json();
+        })
+        .then(data => {
+          document.getElementById('ip-result').textContent = "Votre IP est : " + data.ip;
+        })
+        .catch(error => {
+          console.error("Erreur lors de la récupération de l'IP :", error);
+          document.getElementById('ip-result').textContent = "Erreur lors de la récupération de l'IP.";
+        });
+    }
+  </script>
 </body>
+</html>
